@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs ls:*)",
+      "Bash(xargs -I {} basename {})",
+      "Bash(php artisan:*)",
+      "Bash(./vendor/bin/sail artisan:*)",
+      "Bash(php -r \"echo date\\(''l'', strtotime\\(''2025-03-25''\\)\\);\")",
+      "Bash(./vendor/bin/sail composer:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
