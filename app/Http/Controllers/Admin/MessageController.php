@@ -7,10 +7,7 @@ use App\Http\Requests\DestroyMessageRequest;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use App\Models\ImConversation;
-use App\Models\Message;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class MessageController extends Controller
 {

@@ -13,4 +13,12 @@ class AddRelationshipFieldsToFaqQuestionsTable extends Migration
             $table->foreign('category_id', 'category_fk_10162418')->references('id')->on('faq_categories');
         });
     }
+
+    public function down()
+    {
+        Schema::table('faq_questions', function (Blueprint $table) {
+            $table->dropForeign('category_fk_10162418');
+            $table->dropColumn(['category_id']);
+        });
+    }
 }

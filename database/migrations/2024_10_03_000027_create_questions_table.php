@@ -16,4 +16,11 @@ class CreateQuestionsTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('questions');
+        Schema::enableForeignKeyConstraints();
+    }
 }

@@ -24,8 +24,18 @@ class ContentPage extends Model implements HasMedia
 
     protected $fillable = [
         'title',
+        'slug',
         'page_text',
         'excerpt',
+        'builder_content',
+        'builder_html',
+        'builder_css',
+        'use_builder',
+    ];
+
+    protected $casts = [
+        'builder_content' => 'array',
+        'use_builder'     => 'boolean',
     ];
 
     protected $dates = [

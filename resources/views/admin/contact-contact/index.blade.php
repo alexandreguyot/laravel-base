@@ -1,23 +1,24 @@
 @extends('layouts.admin')
 @section('content')
-<div class="row">
-    <div class="card bg-white">
-        <div class="card-header border-b border-blueGray-200">
-            <div class="card-header-container">
-                <h6 class="card-title">
-                    {{ trans('cruds.contactContact.title_singular') }}
-                    {{ trans('global.list') }}
-                </h6>
 
-                @can('contact_contact_create')
-                    <a class="btn btn-indigo" href="{{ route('contact-contacts.create') }}">
-                        {{ trans('global.add') }} {{ trans('cruds.contactContact.title_singular') }}
-                    </a>
-                @endcan
-            </div>
-        </div>
-        @livewire('contact-contact.index')
+<div class="space-y-4">
+    <x-ui.breadcrumb :items="[
+        ['label' => trans('global.dashboard'), 'href' => route('home'), 'icon' => 'layout-dashboard'],
+        ['label' => trans('cruds.contactContact.title')],
+    ]" />
 
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">{{ trans('cruds.contactContact.title') }}</h1>
+        @can('contact_contact_create')
+            <x-ui.button href="{{ route('contact-contacts.create') }}" icon="plus">
+                {{ trans('global.add') }} {{ trans('cruds.contactContact.title_singular') }}
+            </x-ui.button>
+        @endcan
     </div>
+
+    <x-ui.card>
+        @livewire('contact-contact.index')
+    </x-ui.card>
 </div>
+
 @endsection

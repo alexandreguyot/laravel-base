@@ -15,4 +15,11 @@ class CreateTestResultsTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('test_results');
+        Schema::enableForeignKeyConstraints();
+    }
 }

@@ -1,161 +1,159 @@
-<div>
-    <div class="card-controls sm:flex">
-        <div class="w-full sm:w-1/2">
-            Per page:
-            <select wire:model.live="perPage" class="form-select w-full sm:w-1/6">
+<div class="space-y-4">
+
+    {{-- Barre d'outils --}}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 flex-wrap">
+            {{-- Par page --}}
+            <select wire:model.live="perPage" class="select select-bordered select-sm w-24">
                 @foreach($paginationOptions as $value)
                     <option value="{{ $value }}">{{ $value }}</option>
                 @endforeach
             </select>
 
+            {{-- Supprimer la sélection --}}
             @can('product_delete')
-                <button class="btn btn-rose ml-3 disabled:opacity-50 disabled:cursor-not-allowed" type="button" wire:click="confirm('deleteSelected')" wire:loading.attr="disabled" {{ $this->selectedCount ? '' : 'disabled' }}>
-                    {{ __('Delete Selected') }}
+                <button type="button"
+                    wire:click="confirm('deleteSelected')"
+                    wire:loading.attr="disabled"
+                    {{ $this->selectedCount ? '' : 'disabled' }}
+                    class="btn btn-error btn-sm gap-2 disabled:opacity-40">
+                    <x-icon name="trash" class="w-4 h-4" />
+                    Supprimer ({{ $this->selectedCount }})
                 </button>
             @endcan
 
+            {{-- Exports --}}
+            @feature('excel_export')
             @if(file_exists(app_path('Livewire/ExcelExport.php')))
-                <livewire:excel-export model="Product" format="csv" />
-                <livewire:excel-export model="Product" format="xlsx" />
-                <livewire:excel-export model="Product" format="pdf" />
+                <div class="dropdown">
+                    <button tabindex="0" class="btn btn-ghost btn-sm gap-2">
+                        <x-icon name="download" class="w-4 h-4" />
+                        Exporter
+                        <x-icon name="chevron-down" class="w-3 h-3" />
+                    </button>
+                    <ul tabindex="0" class="dropdown-content z-10 menu menu-sm bg-base-100 rounded-box shadow w-36 p-1">
+                        <li><a><livewire:excel-export model="Product" format="csv" /></a></li>
+                        <li><a><livewire:excel-export model="Product" format="xlsx" /></a></li>
+                        <li><a><livewire:excel-export model="Product" format="pdf" /></a></li>
+                    </ul>
+                </div>
             @endif
-
-
-
-
+            @endfeature
         </div>
-        <div class="w-full sm:w-1/2 sm:text-right">
-            Search:
-            <input type="text" wire:model.live.debounce.300ms="search" class="w-full sm:w-1/3 inline-block" />
-        </div>
-    </div>
-    <div wire:loading.delay>
-        Loading...
-    </div>
 
-    <div class="overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="table table-index w-full">
-                <thead>
-                    <tr>
-                        <th class="w-9">
-                        </th>
-                        <th class="w-28">
-                            {{ trans('cruds.product.fields.id') }}
-                            @include('components.table.sort', ['field' => 'id'])
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.name') }}
-                            @include('components.table.sort', ['field' => 'name'])
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.description') }}
-                            @include('components.table.sort', ['field' => 'description'])
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.price') }}
-                            @include('components.table.sort', ['field' => 'price'])
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.category') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.tag') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.product.fields.photo') }}
-                        </th>
-                        <th>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($products as $product)
-                        <tr>
-                            <td>
-                                <input type="checkbox" value="{{ $product->id }}" wire:model.live="selected">
-                            </td>
-                            <td>
-                                {{ $product->id }}
-                            </td>
-                            <td>
-                                {{ $product->name }}
-                            </td>
-                            <td>
-                                {{ $product->description }}
-                            </td>
-                            <td>
-                                {{ $product->price }}
-                            </td>
-                            <td>
-                                @foreach($product->category as $key => $entry)
-                                    <span class="badge badge-relationship">{{ $entry->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($product->tag as $key => $entry)
-                                    <span class="badge badge-relationship">{{ $entry->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @foreach($product->photo as $key => $entry)
-                                    <a class="link-photo" href="{{ $entry['url'] }}">
-                                        <img src="{{ $entry['thumbnail'] }}" alt="{{ $entry['name'] }}" title="{{ $entry['name'] }}">
-                                    </a>
-                                @endforeach
-                            </td>
-                            <td>
-                                <div class="flex justify-end">
-                                    @can('product_show')
-                                        <a class="btn btn-sm btn-info mr-2" href="{{ route('products.show', $product) }}">
-                                            {{ trans('global.view') }}
-                                        </a>
-                                    @endcan
-                                    @can('product_edit')
-                                        <a class="btn btn-sm btn-success mr-2" href="{{ route('products.edit', $product) }}">
-                                            {{ trans('global.edit') }}
-                                        </a>
-                                    @endcan
-                                    @can('product_delete')
-                                        <button class="btn btn-sm btn-rose mr-2" type="button" wire:click="confirm('delete', {{ $product->id }})" wire:loading.attr="disabled">
-                                            {{ trans('global.delete') }}
-                                        </button>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="10">No entries found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        {{-- Recherche --}}
+        <div class="relative">
+            <x-icon name="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
+            <input
+                type="text"
+                wire:model.live.debounce.300ms="search"
+                placeholder="{{ trans('global.search') }}..."
+                class="input input-bordered input-sm pl-9 w-56"
+            />
         </div>
     </div>
 
-    <div class="card-body">
-        <div class="pt-3">
-            @if($this->selectedCount)
-                <p class="text-sm leading-5">
-                    <span class="font-medium">
-                        {{ $this->selectedCount }}
-                    </span>
-                    {{ __('Entries selected') }}
-                </p>
-            @endif
-            {{ $products->links() }}
-        </div>
+    {{-- Indicateur chargement --}}
+    <div wire:loading.delay class="flex items-center gap-2 text-sm text-base-content/60">
+        <span class="loading loading-spinner loading-xs"></span>
+        Chargement...
     </div>
+
+    {{-- Tableau --}}
+    <x-ui.table :headers="[
+        ['label' => trans('cruds.product.fields.id'),          'key' => 'id',          'sortable' => true],
+        ['label' => trans('cruds.product.fields.name'),        'key' => 'name',        'sortable' => true],
+        ['label' => trans('cruds.product.fields.description'), 'key' => 'description', 'sortable' => true],
+        ['label' => trans('cruds.product.fields.price'),       'key' => 'price',       'sortable' => true],
+        ['label' => trans('cruds.product.fields.category')],
+        ['label' => trans('cruds.product.fields.tag')],
+        ['label' => trans('cruds.product.fields.photo')],
+        ['label' => ''],
+    ]" hover>
+        @forelse($products as $product)
+        <tr>
+            <td class="w-8">
+                <input type="checkbox" value="{{ $product->id }}" wire:model.live="selected" class="checkbox checkbox-sm" />
+            </td>
+            <td class="text-sm font-mono text-base-content/50">#{{ $product->id }}</td>
+            <td class="font-medium">{{ $product->name }}</td>
+            <td class="text-sm text-base-content/70 max-w-xs truncate">{{ $product->description }}</td>
+            <td class="font-medium">{{ number_format($product->price, 2) }} €</td>
+            <td>
+                @foreach($product->category as $entry)
+                    <x-ui.badge variant="ghost" size="xs">{{ $entry->name }}</x-ui.badge>
+                @endforeach
+            </td>
+            <td>
+                @foreach($product->tag as $entry)
+                    <x-ui.badge size="xs">{{ $entry->name }}</x-ui.badge>
+                @endforeach
+            </td>
+            <td>
+                @foreach($product->photo as $entry)
+                    <a href="{{ $entry['url'] }}" target="_blank" class="link-photo">
+                        <img src="{{ $entry['thumbnail'] }}" alt="{{ $entry['name'] }}"
+                            class="w-10 h-10 object-cover rounded-btn inline-block" />
+                    </a>
+                @endforeach
+            </td>
+            <td>
+                <div class="flex items-center justify-end gap-1">
+                    @can('product_show')
+                        <a href="{{ route('products.show', $product) }}"
+                            class="btn btn-ghost btn-xs tooltip" data-tip="{{ trans('global.view') }}">
+                            <x-icon name="eye" class="w-4 h-4" />
+                        </a>
+                    @endcan
+                    @can('product_edit')
+                        <a href="{{ route('products.edit', $product) }}"
+                            class="btn btn-ghost btn-xs tooltip" data-tip="{{ trans('global.edit') }}">
+                            <x-icon name="pencil" class="w-4 h-4" />
+                        </a>
+                    @endcan
+                    @can('product_delete')
+                        <button type="button"
+                            wire:click="confirm('delete', {{ $product->id }})"
+                            class="btn btn-ghost btn-xs text-error tooltip" data-tip="{{ trans('global.delete') }}">
+                            <x-icon name="trash" class="w-4 h-4" />
+                        </button>
+                    @endcan
+                </div>
+            </td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="9" class="text-center py-12 text-base-content/40">
+                <x-icon name="package" class="w-10 h-10 mx-auto mb-3" />
+                <p>Aucun produit trouvé.</p>
+            </td>
+        </tr>
+        @endforelse
+    </x-ui.table>
+
+    {{-- Footer --}}
+    <div class="flex items-center justify-between gap-4">
+        @if($this->selectedCount)
+            <p class="text-sm text-base-content/60">
+                <span class="font-medium text-base-content">{{ $this->selectedCount }}</span>
+                élément(s) sélectionné(s)
+            </p>
+        @else
+            <div></div>
+        @endif
+
+        {{ $products->links() }}
+    </div>
+
 </div>
 
 @push('scripts')
-    <script>
-        Livewire.on('confirm', e => {
-    if (!confirm("{{ trans('global.areYouSure') }}")) {
-        return
-    }
-@this[e.callback](...e.argv)
-})
-    </script>
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('confirm', (e) => {
+            if (!confirm("{{ trans('global.areYouSure') }}")) return
+            Livewire.find(e.component).call(e.callback, ...e.argv)
+        })
+    })
+</script>
 @endpush

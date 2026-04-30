@@ -15,4 +15,11 @@ class CreateRolesTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('roles');
+        Schema::enableForeignKeyConstraints();
+    }
 }

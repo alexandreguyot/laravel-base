@@ -21,4 +21,11 @@ class CreateContactContactsTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('contact_contacts');
+        Schema::enableForeignKeyConstraints();
+    }
 }

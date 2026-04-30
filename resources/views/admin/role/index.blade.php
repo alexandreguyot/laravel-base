@@ -1,23 +1,20 @@
 @extends('layouts.admin')
 @section('content')
-<div class="row">
-    <div class="card bg-white">
-        <div class="card-header border-b border-blueGray-200">
-            <div class="card-header-container">
-                <h6 class="card-title">
-                    {{ trans('cruds.role.title_singular') }}
-                    {{ trans('global.list') }}
-                </h6>
 
-                @can('role_create')
-                    <a class="btn btn-indigo" href="{{ route('roles.create') }}">
-                        {{ trans('global.add') }} {{ trans('cruds.role.title_singular') }}
-                    </a>
-                @endcan
-            </div>
-        </div>
-        @livewire('role.index')
+<div class="space-y-4">
+    <x-ui.breadcrumb :items="[
+        ['label' => trans('global.dashboard'), 'href' => route('home'), 'icon' => 'layout-dashboard'],
+        ['label' => trans('cruds.role.title')],
+    ]" />
 
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">{{ trans('cruds.role.title') }}</h1>
+        
     </div>
+
+    <x-ui.card>
+        @livewire('role.index')
+    </x-ui.card>
 </div>
+
 @endsection

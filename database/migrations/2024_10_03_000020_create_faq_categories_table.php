@@ -15,4 +15,11 @@ class CreateFaqCategoriesTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('faq_categories');
+        Schema::enableForeignKeyConstraints();
+    }
 }

@@ -29,4 +29,11 @@ class CreateMediaTable extends Migration
             $table->nullableTimestamps();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('media');
+        Schema::enableForeignKeyConstraints();
+    }
 }

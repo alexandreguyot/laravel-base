@@ -1,23 +1,24 @@
 @extends('layouts.admin')
 @section('content')
-<div class="row">
-    <div class="card bg-white">
-        <div class="card-header border-b border-blueGray-200">
-            <div class="card-header-container">
-                <h6 class="card-title">
-                    {{ trans('cruds.contentPage.title_singular') }}
-                    {{ trans('global.list') }}
-                </h6>
 
-                @can('content_page_create')
-                    <a class="btn btn-indigo" href="{{ route('content-pages.create') }}">
-                        {{ trans('global.add') }} {{ trans('cruds.contentPage.title_singular') }}
-                    </a>
-                @endcan
-            </div>
-        </div>
-        @livewire('content-page.index')
+<div class="space-y-4">
+    <x-ui.breadcrumb :items="[
+        ['label' => trans('global.dashboard'), 'href' => route('home'), 'icon' => 'layout-dashboard'],
+        ['label' => trans('cruds.contentPage.title')],
+    ]" />
 
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">{{ trans('cruds.contentPage.title') }}</h1>
+        @can('content_page_create')
+            <x-ui.button href="{{ route('content-pages.create') }}" icon="plus">
+                {{ trans('global.add') }} {{ trans('cruds.contentPage.title_singular') }}
+            </x-ui.button>
+        @endcan
     </div>
+
+    <x-ui.card>
+        @livewire('content-page.index')
+    </x-ui.card>
 </div>
+
 @endsection

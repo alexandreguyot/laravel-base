@@ -13,4 +13,12 @@ class AddRelationshipFieldsToCoursesTable extends Migration
             $table->foreign('teacher_id', 'teacher_fk_10162445')->references('id')->on('users');
         });
     }
+
+    public function down()
+    {
+        Schema::table('courses', function (Blueprint $table) {
+            $table->dropForeign('teacher_fk_10162445');
+            $table->dropColumn(['teacher_id']);
+        });
+    }
 }

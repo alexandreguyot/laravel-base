@@ -1,21 +1,26 @@
 @extends('layouts.admin')
 @section('content')
-<div class="row">
-    <div class="card bg-blueGray-100">
-        <div class="card-header">
-            <div class="card-header-container">
-                <h6 class="card-title">
-                    {{ trans('global.edit') }}
-                    {{ trans('cruds.crmCustomer.title_singular') }}:
-                    {{ trans('cruds.crmCustomer.fields.id') }}
-                    {{ $crmCustomer->id }}
-                </h6>
-            </div>
-        </div>
 
-        <div class="card-body">
-            @livewire('crm-customer.edit', [$crmCustomer])
-        </div>
+<div class="space-y-4">
+    <x-ui.breadcrumb :items="[
+        ['label' => trans('global.dashboard'), 'href' => route('home'), 'icon' => 'layout-dashboard'],
+        ['label' => trans('cruds.crmCustomer.title'), 'href' => route('crm-customers.index')],
+        ['label' => trans('global.edit')],
+    ]" />
+
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">
+            {{ trans('global.edit') }} {{ trans('cruds.crmCustomer.title_singular') }}
+            <span class="text-base-content/40 font-normal text-lg">#{{ $crmCustomer->id }}</span>
+        </h1>
+        <x-ui.button href="{{ route('crm-customers.index') }}" variant="ghost" icon="arrow-left">
+            {{ trans('global.back_to_list') }}
+        </x-ui.button>
     </div>
+
+    <x-ui.card>
+        @livewire('crm-customer.edit', [$crmCustomer])
+    </x-ui.card>
 </div>
+
 @endsection

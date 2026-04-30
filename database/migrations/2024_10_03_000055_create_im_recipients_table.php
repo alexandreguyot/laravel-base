@@ -17,6 +17,8 @@ class CreateImRecipientsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('im_participants');
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('im_recipients');
+        Schema::enableForeignKeyConstraints();
     }
 }

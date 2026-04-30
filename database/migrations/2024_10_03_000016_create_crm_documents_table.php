@@ -15,4 +15,11 @@ class CreateCrmDocumentsTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('crm_documents');
+        Schema::enableForeignKeyConstraints();
+    }
 }

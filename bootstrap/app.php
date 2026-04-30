@@ -1,55 +1,68 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Create The Application
-|--------------------------------------------------------------------------
-|
-| The first thing we will do is create a new Laravel application instance
-| which serves as the "glue" for all the components of Laravel, and is
-| the IoC container for the system binding all of the various parts.
-|
-*/
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
+        health: '/up',
+        using: function () {
+            $adminSubdomain = config('app.admin_subdomain');
+            $baseUrl        = config('app.base_url');
+            $adminDomain    = $adminSubdomain ? "{$adminSubdomain}.{$baseUrl}" : null;
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
+            if ($adminDomain) {
+                // Domaine public : laravel.test
+                Route::middleware('web')
+                    ->domain($baseUrl)
+                    ->group(base_path('routes/web.php'));
 
-$app->singleton(
-    Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
-);
+                // Domaine admin : manager.laravel.test
+                Route::middleware('web')
+                    ->domain($adminDomain)
+                    ->group(base_path('routes/manager.php'));
+            } else {
+                // Pas de sous-domaine : tout sur le même domaine
+                Route::middleware('web')
+                    ->group(base_path('routes/web.php'));
 
-$app->singleton(
-    Illuminate\Contracts\Console\Kernel::class,
-    App\Console\Kernel::class
-);
+                Route::middleware('web')
+                    ->group(base_path('routes/manager.php'));
+            }
 
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    App\Exceptions\Handler::class
-);
+            // Routes API
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
+        },
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        // Faire confiance à NPM (reverse proxy)
+        $middleware->trustProxies(at: '*');
 
-/*
-|--------------------------------------------------------------------------
-| Return The Application
-|--------------------------------------------------------------------------
-|
-| This script returns the application instance. The instance is given to
-| the calling script so we can separate the building of the instances
-| from the actual running of the application and sending responses.
-|
-*/
+        // Middleware web supplémentaires
+        $middleware->web(append: [
+            \App\Http\Middleware\AuthGates::class,
+            \App\Http\Middleware\SetPreferredLocale::class,
+            \App\Http\Middleware\ShareUnreadConversations::class,
+        ]);
 
-return $app;
+        // Middleware API supplémentaires
+        $middleware->api(append: [
+            \App\Http\Middleware\AuthGates::class,
+        ]);
+
+        // Alias de middleware
+        $middleware->alias([
+            'approved'   => \App\Http\Middleware\EnsureUserIsApproved::class,
+            'feature'    => \App\Http\Middleware\CheckFeatureFlag::class,
+            'two-factor' => \App\Http\Middleware\TwoFactorMiddleware::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();

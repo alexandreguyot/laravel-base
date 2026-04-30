@@ -16,4 +16,11 @@ class CreateContentCategoriesTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('content_categories');
+        Schema::enableForeignKeyConstraints();
+    }
 }

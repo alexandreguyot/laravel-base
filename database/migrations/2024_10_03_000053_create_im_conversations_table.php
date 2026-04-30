@@ -19,6 +19,8 @@ class CreateImConversationsTable extends Migration
 
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('im_conversations');
+        Schema::enableForeignKeyConstraints();
     }
 }

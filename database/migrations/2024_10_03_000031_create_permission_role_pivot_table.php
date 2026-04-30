@@ -15,4 +15,11 @@ class CreatePermissionRolePivotTable extends Migration
             $table->foreign('permission_id', 'permission_id_fk_10162240')->references('id')->on('permissions')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('permission_role');
+        Schema::enableForeignKeyConstraints();
+    }
 }

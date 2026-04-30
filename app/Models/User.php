@@ -7,6 +7,8 @@ use App\Support\HasAdvancedFilter;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Hash;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,14 +17,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail, FilamentUser
 {
     use HasFactory, HasAdvancedFilter, Notifiable, SoftDeletes;
 
     public $table = 'users';
 
     protected $casts = [
-        'is_approved' => 'boolean',
+        'is_approved'      => 'boolean',
+        'two_factor_enabled' => 'boolean',
     ];
 
     protected $hidden = [
@@ -36,6 +39,10 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         'password',
         'locale',
         'is_approved',
+        'two_factor_secret',
+        'two_factor_enabled',
+        'two_factor_confirmed_at',
+        'ui_theme',
     ];
 
     protected $dates = [
@@ -62,6 +69,11 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         'roles.title',
         'locale',
     ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->is_approved && $this->hasVerifiedEmail();
+    }
 
     public function getIsAdminAttribute()
     {
@@ -95,7 +107,17 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
 
     public function setEmailVerifiedAtAttribute($value)
     {
-        $this->attributes['email_verified_at'] = $value ? Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s') : null;
+        if (! $value) {
+            $this->attributes['email_verified_at'] = null;
+            return;
+        }
+
+        if ($value instanceof \DateTimeInterface) {
+            $this->attributes['email_verified_at'] = Carbon::instance($value)->format('Y-m-d H:i:s');
+            return;
+        }
+
+        $this->attributes['email_verified_at'] = Carbon::createFromFormat(config('project.datetime_format'), $value)->format('Y-m-d H:i:s');
     }
 
     public function setPasswordAttribute($input)

@@ -1,63 +1,83 @@
+@php
+    use App\Support\LayoutHelper;
+    $navLayout   = LayoutHelper::navLayout();
+    $uiTheme     = LayoutHelper::uiTheme();
+    $iconLibrary = LayoutHelper::iconLibrary();
+@endphp
 <!DOCTYPE html>
-<html>
-
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ $uiTheme }}">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>{{ trans('panel.site_title') }}</title>
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-        @stack('styles')
+    @stack('styles')
 </head>
 
-<body class="text-blueGray-800 antialiased">
+<body class="bg-base-200 text-base-content antialiased">
 
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    @if($navLayout === 'left')
+        {{-- ============================================================
+             Layout SIDEBAR GAUCHE (DaisyUI Drawer)
+             ============================================================ --}}
+        <div class="drawer lg:drawer-open">
+            <input id="admin-drawer" type="checkbox" class="drawer-toggle" />
 
-    <div id="app">
-        <x-sidebar />
+            {{-- Contenu principal --}}
+            <div class="drawer-content flex flex-col min-h-screen">
+                {{-- Navbar du haut (mobile + user menu) --}}
+                @include('layouts.partials.topbar')
 
-        <div class="relative md:ml-64 bg-blueGray-50 min-h-screen">
-            <x-nav />
+                {{-- Contenu de la page --}}
+                <main class="flex-1 p-4 md:p-6">
+                    @if(session('status'))
+                        <x-ui.alert variant="success" dismissible class="mb-4">
+                            {{ session('status') }}
+                        </x-ui.alert>
+                    @endif
 
-            <div class="relative bg-pink-600 md:pt-32 pb-32 pt-12">
-                <div class="px-4 md:px-10 mx-auto w-full">&nbsp;</div>
+                    @yield('content')
+                </main>
+
+                @include('layouts.partials.footer')
             </div>
 
-            <div class="relative px-4 md:px-10 mx-auto w-full min-h-full -m-48">
-                @if(session('status'))
-                    <x-alert message="{{ session('status') }}" variant="indigo" role="alert" />
-                @endif
-
-                @yield('content')
-
-                <x-footer />
+            {{-- Sidebar --}}
+            <div class="drawer-side z-40">
+                <label for="admin-drawer" aria-label="Fermer menu" class="drawer-overlay"></label>
+                @include('layouts.partials.sidebar')
             </div>
         </div>
 
-    </div>
+    @else
+        {{-- ============================================================
+             Layout TOP NAV
+             ============================================================ --}}
+        <div class="min-h-screen flex flex-col">
+            @include('layouts.partials.topnav')
 
-    <form id="logoutform" action="{{ route('logout') }}" method="POST" style="display: none;">
-        {{ csrf_field() }}
+            <main class="flex-1 p-4 md:p-6">
+                @if(session('status'))
+                    <x-ui.alert variant="success" dismissible class="mb-4">
+                        {{ session('status') }}
+                    </x-ui.alert>
+                @endif
+
+                @yield('content')
+            </main>
+
+            @include('layouts.partials.footer')
+        </div>
+    @endif
+
+    <form id="logoutform" action="{{ route('logout') }}" method="POST" class="hidden">
+        @csrf
     </form>
-    <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
-    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
-    @livewireScripts
-        @yield('scripts')
-        @stack('scripts')
-        <script>
-            function closeAlert(event){
-        let element = event.target;
-        while(element.nodeName !== "BUTTON"){
-          element = element.parentNode;
-        }
-        element.parentNode.parentNode.removeChild(element.parentNode);
-      }
-        </script>
-</body>
 
+    @livewireScripts
+    @stack('scripts')
+</body>
 </html>

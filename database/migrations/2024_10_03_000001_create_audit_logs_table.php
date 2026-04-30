@@ -19,4 +19,11 @@ class CreateAuditLogsTable extends Migration
             $table->timestamps();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('audit_logs');
+        Schema::enableForeignKeyConstraints();
+    }
 }

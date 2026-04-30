@@ -13,4 +13,12 @@ class AddRelationshipFieldsToCrmNotesTable extends Migration
             $table->foreign('customer_id', 'customer_fk_10162378')->references('id')->on('crm_customers');
         });
     }
+
+    public function down()
+    {
+        Schema::table('crm_notes', function (Blueprint $table) {
+            $table->dropForeign('customer_fk_10162378');
+            $table->dropColumn(['customer_id']);
+        });
+    }
 }

@@ -15,4 +15,11 @@ class CreateProductProductCategoryPivotTable extends Migration
             $table->foreign('product_category_id', 'product_category_id_fk_10162331')->references('id')->on('product_categories')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('product_product_category');
+        Schema::enableForeignKeyConstraints();
+    }
 }

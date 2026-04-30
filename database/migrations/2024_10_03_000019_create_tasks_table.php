@@ -17,4 +17,11 @@ class CreateTasksTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('tasks');
+        Schema::enableForeignKeyConstraints();
+    }
 }

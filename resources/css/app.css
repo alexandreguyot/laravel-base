@@ -1,9 +1,82 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui" {
+    themes: light --default, dark, corporate, business, cupcake, nord;
+    logs: false;
+}
 
-@import "theme.css";
-@import "~select2/dist/css/select2.min.css";
-@import "select.css";
-@import "~dropzone/dist/dropzone.css";
-@import "~flatpickr/dist/flatpickr.min.css";
+/* ============================================================
+   Imports tiers
+   ============================================================ */
+@import "select2/dist/css/select2.min.css";
+@import "dropzone/dist/dropzone.css";
+@import "flatpickr/dist/flatpickr.min.css";
+
+/* ============================================================
+   Surcharges select2 → DaisyUI
+   ============================================================ */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+    @apply border-base-300 bg-base-100 rounded-lg min-h-[2.5rem] flex items-center;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    @apply text-base-content px-3;
+}
+.select2-container--default .select2-results__option--highlighted {
+    @apply bg-primary text-primary-content;
+}
+.select2-dropdown {
+    @apply border-base-300 bg-base-100 shadow-lg rounded-box;
+}
+
+/* ============================================================
+   Surcharges Dropzone → DaisyUI
+   ============================================================ */
+.dropzone {
+    @apply border-2 border-dashed border-base-300 rounded-box bg-base-200 p-6 text-center cursor-pointer;
+}
+.dropzone:hover {
+    @apply border-primary bg-base-300;
+}
+.dropzone .dz-preview .dz-image img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================================
+   Utilitaires globaux
+   ============================================================ */
+.form-group {
+    @apply mt-4;
+}
+.form-group:first-of-type {
+    @apply mt-0;
+}
+.validation-message {
+    display: none;
+    @apply text-error text-sm mt-1;
+}
+.form-group.invalid .validation-message {
+    display: block;
+}
+.form-group.invalid input,
+.form-group.invalid select,
+.form-group.invalid textarea {
+    @apply input-error;
+}
+
+.help-block {
+    @apply text-base-content/60 text-sm mt-1;
+}
+
+.badge-relationship {
+    @apply badge badge-ghost;
+}
+
+.link-photo {
+    @apply inline-block last:mr-0 mr-1;
+}
+
+.radio-label {
+    @apply flex items-center gap-2 cursor-pointer mb-1 last:mb-0;
+}

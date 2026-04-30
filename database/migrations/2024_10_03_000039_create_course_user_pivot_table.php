@@ -15,4 +15,11 @@ class CreateCourseUserPivotTable extends Migration
             $table->foreign('user_id', 'user_id_fk_10162451')->references('id')->on('users')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('course_user');
+        Schema::enableForeignKeyConstraints();
+    }
 }

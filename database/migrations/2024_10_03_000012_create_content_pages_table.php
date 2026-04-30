@@ -17,4 +17,11 @@ class CreateContentPagesTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('content_pages');
+        Schema::enableForeignKeyConstraints();
+    }
 }

@@ -15,4 +15,11 @@ class CreateContentCategoryContentPagePivotTable extends Migration
             $table->foreign('content_category_id', 'content_category_id_fk_10162351')->references('id')->on('content_categories')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('content_category_content_page');
+        Schema::enableForeignKeyConstraints();
+    }
 }

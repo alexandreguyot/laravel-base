@@ -17,4 +17,14 @@ class AddRelationshipFieldsToTestAnswersTable extends Migration
             $table->foreign('option_id', 'option_fk_10162502')->references('id')->on('question_options');
         });
     }
+
+    public function down()
+    {
+        Schema::table('test_answers', function (Blueprint $table) {
+            $table->dropForeign('test_result_fk_10162500');
+            $table->dropForeign('question_fk_10162501');
+            $table->dropForeign('option_fk_10162502');
+            $table->dropColumn(['test_result_id', 'question_id', 'option_id']);
+        });
+    }
 }

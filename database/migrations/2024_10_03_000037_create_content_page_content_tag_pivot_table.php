@@ -15,4 +15,11 @@ class CreateContentPageContentTagPivotTable extends Migration
             $table->foreign('content_tag_id', 'content_tag_id_fk_10162352')->references('id')->on('content_tags')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('content_page_content_tag');
+        Schema::enableForeignKeyConstraints();
+    }
 }

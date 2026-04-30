@@ -15,4 +15,13 @@ class AddRelationshipFieldsToTasksTable extends Migration
             $table->foreign('assigned_to_id', 'assigned_to_fk_10162407')->references('id')->on('users');
         });
     }
+
+    public function down()
+    {
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropForeign('status_fk_10162403');
+            $table->dropForeign('assigned_to_fk_10162407');
+            $table->dropColumn(['status_id', 'assigned_to_id']);
+        });
+    }
 }

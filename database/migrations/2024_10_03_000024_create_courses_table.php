@@ -18,4 +18,11 @@ class CreateCoursesTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('courses');
+        Schema::enableForeignKeyConstraints();
+    }
 }

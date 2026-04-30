@@ -15,4 +15,11 @@ class CreateTestAnswersTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('test_answers');
+        Schema::enableForeignKeyConstraints();
+    }
 }

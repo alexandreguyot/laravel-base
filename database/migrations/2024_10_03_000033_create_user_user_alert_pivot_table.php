@@ -16,4 +16,11 @@ class CreateUserUserAlertPivotTable extends Migration
             $table->timestamp('seen_at')->nullable();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('user_user_alert');
+        Schema::enableForeignKeyConstraints();
+    }
 }

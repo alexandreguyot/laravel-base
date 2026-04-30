@@ -15,4 +15,11 @@ class CreatePermissionsTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('permissions');
+        Schema::enableForeignKeyConstraints();
+    }
 }

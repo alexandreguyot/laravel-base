@@ -20,6 +20,8 @@ class CreateImMessagesTable extends Migration
 
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('im_messages');
+        Schema::enableForeignKeyConstraints();
     }
 }

@@ -15,4 +15,11 @@ class CreateTaskTaskTagPivotTable extends Migration
             $table->foreign('task_tag_id', 'task_tag_id_fk_10162404')->references('id')->on('task_tags')->onDelete('cascade');
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('task_task_tag');
+        Schema::enableForeignKeyConstraints();
+    }
 }

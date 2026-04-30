@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan:*)",
+      "Bash(npm install *)",
+      "Bash(npm show *)",
+      "Bash(python3 -c \"import sys,json; v=json.load\\(sys.stdin\\); print\\([x for x in v if x.startswith\\('5'\\)][-3:]\\)\")",
+      "Bash(npm run *)",
+      "Bash(grep -l \"dropColumn\\\\|dropIfExists\\\\|Schema::drop\" /Users/alexandre/Work/laravel-base/database/migrations/*.php)",
+      "Bash(grep -rn \"constrained\\\\|foreign\" /Users/alexandre/Work/laravel-base/database/migrations/*.php)",
+      "Bash(awk -F: '{print $1}')",
+      "Bash(python3)",
+      "Bash(php -l /Users/alexandre/Work/laravel-base/database/migrations/2024_10_03_000001_create_audit_logs_table.php)",
+      "Bash(php -l /Users/alexandre/Work/laravel-base/database/migrations/2024_10_03_000052_add_relationship_fields_to_test_answers_table.php)",
+      "Bash(php -l /Users/alexandre/Work/laravel-base/database/migrations/2024_10_03_000040_add_relationship_fields_to_crm_customers_table.php)",
+      "Bash(php -l /Users/alexandre/Work/laravel-base/app/Console/Commands/SafeMigrateFresh.php)",
+      "Bash(composer require *)",
+      "Bash(php -l app/Providers/Filament/AdminPanelProvider.php)",
+      "Bash(php -l app/Models/User.php)",
+      "Bash(php -l app/Filament/Resources/UserResource.php)",
+      "Bash(php -l app/Filament/Widgets/StatsOverview.php)",
+      "Bash(php -r ' *)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k,v\\) for k,v in {**d.get\\('require',{}\\),**d.get\\('require-dev',{}\\)}.items\\(\\)]\")",
+      "Bash(composer search *)",
+      "Bash(sed -n '18,30p' /Users/alexandre/Work/laravel-base/app/Models/ContactContact.php)",
+      "Bash(sed -n '15,25p' /Users/alexandre/Work/laravel-base/app/Models/CrmNote.php)",
+      "Bash(php -l /Users/alexandre/Work/laravel-base/resources/views/admin/page-builder/editor.blade.php)",
+      "Bash(xargs cat *)",
+      "Bash(perl -i -0pe 's/\\\\n    private function localAdmin\\\\\\(\\\\\\): User\\\\n    \\\\{\\\\n        return User::factory\\\\\\(\\\\\\)->create\\\\\\(\\\\\\);\\\\n    \\\\}\\\\n//g' tests/Feature/Admin/CrmTest.php tests/Feature/Admin/CourseTest.php tests/Feature/Admin/UserTest.php tests/Feature/Admin/RolePermissionTest.php tests/Feature/Admin/FaqTest.php tests/Feature/Admin/SettingsTest.php tests/Feature/Admin/TaskTest.php tests/Feature/Admin/ContentPageTest.php tests/Feature/Admin/ProductTest.php tests/Feature/Admin/AuditLogTest.php tests/Feature/Admin/FeatureFlagTest.php)",
+      "Bash(awk '/protected \\\\$fillable/,/];/' app/Models/__TRACKED_VAR__.php)"
+    ]
+  }
+}

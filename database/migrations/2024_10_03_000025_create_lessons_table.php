@@ -20,4 +20,11 @@ class CreateLessonsTable extends Migration
             $table->softDeletes();
         });
     }
+
+    public function down()
+    {
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('lessons');
+        Schema::enableForeignKeyConstraints();
+    }
 }

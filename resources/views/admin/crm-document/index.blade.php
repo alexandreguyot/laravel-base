@@ -1,23 +1,24 @@
 @extends('layouts.admin')
 @section('content')
-<div class="row">
-    <div class="card bg-white">
-        <div class="card-header border-b border-blueGray-200">
-            <div class="card-header-container">
-                <h6 class="card-title">
-                    {{ trans('cruds.crmDocument.title_singular') }}
-                    {{ trans('global.list') }}
-                </h6>
 
-                @can('crm_document_create')
-                    <a class="btn btn-indigo" href="{{ route('crm-documents.create') }}">
-                        {{ trans('global.add') }} {{ trans('cruds.crmDocument.title_singular') }}
-                    </a>
-                @endcan
-            </div>
-        </div>
-        @livewire('crm-document.index')
+<div class="space-y-4">
+    <x-ui.breadcrumb :items="[
+        ['label' => trans('global.dashboard'), 'href' => route('home'), 'icon' => 'layout-dashboard'],
+        ['label' => trans('cruds.crmDocument.title')],
+    ]" />
 
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">{{ trans('cruds.crmDocument.title') }}</h1>
+        @can('crm_document_create')
+            <x-ui.button href="{{ route('crm-documents.create') }}" icon="plus">
+                {{ trans('global.add') }} {{ trans('cruds.crmDocument.title_singular') }}
+            </x-ui.button>
+        @endcan
     </div>
+
+    <x-ui.card>
+        @livewire('crm-document.index')
+    </x-ui.card>
 </div>
+
 @endsection
